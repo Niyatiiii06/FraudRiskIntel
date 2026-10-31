@@ -40,7 +40,26 @@ Runs `sql/02_*.sql` to `sql/04_*.sql` in order and creates the `features` table
 `bal_*` features are very strong in PaySim because of how the simulator records fraud;
 step 4 will compare models with and without them.
 
-## 5. Run tests
+## 5. Build graph features
+```powershell
+python -m fraud.build_graph_features
+```
+Creates `model_table` (step 2 features + graph features), the table models train on.
+Takes about a minute and needs ~3 GB of free RAM (close other heavy apps if it fails).
+
+| Source | Features |
+|---|---|
+| `sql/05_receiver_known_fraud.sql` | `dest_known_fraud_count`: confirmed fraud this receiver got before |
+| `fraud/graph_features.py` | `orig_component_size`, `dest_component_size`, `already_connected`, `dest_component_known_fraud` |
+| `sql/06_model_table.sql` | joins everything into `model_table` |
+
+How leakage is avoided:
+- The graph (accounts = nodes, transactions = edges) is grown hour by hour with union-find.
+  Each transaction's features come from the graph built from earlier hours only.
+- A fraud label counts only `LABEL_DELAY_HOURS` (24, in `fraud/config.py`) after the
+  transaction, since banks confirm fraud later.
+
+## 6. Run tests
 ```powershell
 pytest
 ```

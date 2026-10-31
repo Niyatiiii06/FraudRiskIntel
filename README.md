@@ -5,12 +5,12 @@ SQL feature engineering in DuckDB, transaction-graph features, gradient-boosted 
 time-based split, cost-based decision thresholds, SHAP explanations, MLflow tracking, and a
 FastAPI scoring service with drift monitoring.
 
-> **Status:** in progress — steps 1–2 (data loading, SQL features) done. Results will be added only after evaluation is run.
+> **Status:** in progress — steps 1–3 (data loading, SQL features, graph features) done. Results will be added only after evaluation is run.
 
 ## Roadmap
 - [x] 1. Load PaySim into DuckDB
 - [x] 2. SQL feature engineering (receiver velocity, account history, balance mismatches)
-- [ ] 3. Graph features (NetworkX)
+- [x] 3. Graph features (time-safe connected components, links to known fraud)
 - [ ] 4. Models with time-based train/val/test split, plus a with/without balance-features ablation
 - [ ] 5. Imbalance handling, PR-AUC, cost-based threshold
 - [ ] 6. SHAP explanations (global + per transaction)
@@ -22,7 +22,7 @@ FastAPI scoring service with drift monitoring.
 ## Key design choices
 - **Scored population:** only TRANSFER and CASH_OUT (the only types with fraud); history features still use all types.
 - **Receiver-side history:** 99.85% of senders appear only once, so velocity features are built on the receiving account.
-- **No leakage in features:** history windows only see strictly earlier hours.
+- **No leakage in features:** history windows only see strictly earlier hours; the transaction graph is grown hour by hour (union-find), and fraud labels count only after a 24-hour confirmation delay.
 
 ## Data
 PaySim synthetic dataset by E. A. Lopez-Rojas et al., from Kaggle (CC BY-SA 4.0). Not stored in this repo.
