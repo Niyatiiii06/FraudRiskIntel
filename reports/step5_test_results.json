@@ -1,0 +1,59 @@
+{
+  "final_feature_set": "base",
+  "class_weight": false,
+  "threshold": 0.021,
+  "costs": {
+    "missed_fraud": 50,
+    "false_alarm": 1
+  },
+  "test_rows": 408077,
+  "test_fraud_rate": 0.00983,
+  "test_pr_auc": 0.3498,
+  "test_roc_auc": 0.9392,
+  "decisions": [
+    {
+      "approach": "flag nothing",
+      "alarms": 0,
+      "caught": 0,
+      "missed": 4010,
+      "false_alarms": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "total_cost": 200500
+    },
+    {
+      "approach": "PaySim rule",
+      "alarms": 13,
+      "caught": 13,
+      "missed": 3997,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.0032,
+      "total_cost": 199850
+    },
+    {
+      "approach": "our model",
+      "alarms": 9129,
+      "caught": 2700,
+      "missed": 1310,
+      "false_alarms": 6429,
+      "precision": 0.2958,
+      "recall": 0.6733,
+      "total_cost": 71929
+    }
+  ],
+  "ablation": [
+    {
+      "features": "base",
+      "test_pr_auc": 0.3498
+    },
+    {
+      "features": "base+graph",
+      "test_pr_auc": 0.3515
+    },
+    {
+      "features": "base+graph+balance",
+      "test_pr_auc": 0.9999
+    }
+  ]
+}

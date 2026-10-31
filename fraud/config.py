@@ -13,3 +13,12 @@ SQL_DIR = PROJECT_ROOT / "sql"
 # Banks confirm fraud later (customer complaint, investigation), so features
 # may only use labels that would already be confirmed at scoring time.
 LABEL_DELAY_HOURS = 24
+
+# Step 5: price of each kind of mistake (assumptions; change them and re-run).
+# A missed fraud loses money and trust; a false alarm costs a quick manual check.
+COST_MISSED_FRAUD = 50
+COST_FALSE_ALARM = 1
+
+# Where the trained model and results are saved.
+MODEL_PATH = PROJECT_ROOT / "models" / "fraud_model.joblib"
+REPORTS_DIR = PROJECT_ROOT / "reports"

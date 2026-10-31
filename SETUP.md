@@ -71,7 +71,18 @@ python -m fraud.train_models
 - Reports PR-AUC (main metric) and ROC-AUC on **validation**, saved to `reports/step4_validation.csv`.
 - The test set is not touched here; it is used once in step 5.
 
-## 7. Run tests
+## 7. Final evaluation (opens the test set once)
+```powershell
+python -m fraud.evaluate_final
+```
+- Final features: `base` (graph added nothing on validation; `bal_*` is a simulator artifact).
+- Class weights on/off and the decision threshold are chosen on validation.
+  The threshold minimises total cost, with costs set in `fraud/config.py`
+  (`COST_MISSED_FRAUD = 50`, `COST_FALSE_ALARM = 1`).
+- Then the test set is scored once and compared with "flag nothing" and PaySim's built-in rule.
+- Saves `models/fraud_model.joblib` and `reports/step5_test_results.json`.
+
+## 8. Run tests
 ```powershell
 pytest
 ```
