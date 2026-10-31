@@ -1,0 +1,4 @@
+# Step 1: data loading. More packages get added as we reach each step.
+duckdb>=1.1
+pandas>=2.2
+pytest>=8.0

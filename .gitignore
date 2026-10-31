@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Data (too big for git; everyone downloads it from Kaggle)
+data/raw/*
+!data/raw/.gitkeep
+data/*.duckdb
+data/*.duckdb.wal
+*.zip
+
+# Later steps
+mlruns/
+mlartifacts/
+
+# Editors / OS
+.vscode/
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+.env
