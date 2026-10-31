@@ -1,4 +1,8 @@
-# Step 1: data loading. More packages get added as we reach each step.
+# Step 1-3: data loading and features
 duckdb>=1.1
 pandas>=2.2
 pytest>=8.0
+
+# Step 4: models
+scikit-learn>=1.5
+lightgbm>=4.5

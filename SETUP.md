@@ -59,7 +59,19 @@ How leakage is avoided:
 - A fraud label counts only `LABEL_DELAY_HOURS` (24, in `fraud/config.py`) after the
   transaction, since banks confirm fraud later.
 
-## 6. Run tests
+## 6. Train and compare models (validation only)
+```powershell
+pip install -r requirements.txt
+python -m fraud.train_models
+```
+- Splits `model_table` by time: the hours holding the first ~70% of rows are train,
+  the next ~15% validation, the last ~15% test. An hour is never split across sets.
+- Trains logistic regression and LightGBM on 3 feature sets
+  (`base`, `base+graph`, `base+graph+balance`, defined in `fraud/modeling.py`).
+- Reports PR-AUC (main metric) and ROC-AUC on **validation**, saved to `reports/step4_validation.csv`.
+- The test set is not touched here; it is used once in step 5.
+
+## 7. Run tests
 ```powershell
 pytest
 ```

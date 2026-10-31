@@ -110,3 +110,11 @@ def test_summaries_run_without_errors(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "Averages by label" in out
     assert "Graph features by label" in out
+
+
+def test_model_table_has_every_feature_used_in_step4(model_rows):
+    from fraud.modeling import FEATURE_SETS
+
+    columns = set(next(iter(model_rows.values())).index)
+    missing = set(FEATURE_SETS["base+graph+balance"]) - columns
+    assert not missing

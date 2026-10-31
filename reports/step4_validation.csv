@@ -1,0 +1,7 @@
+model,features,n_features,pr_auc,roc_auc
+logistic_regression,base,10,0.0663,0.8313
+lightgbm,base,10,0.4035,0.9339
+logistic_regression,base+graph,15,0.068,0.8316
+lightgbm,base+graph,15,0.4024,0.9325
+logistic_regression,base+graph+balance,19,0.8332,0.9974
+lightgbm,base+graph+balance,19,1.0,1.0
