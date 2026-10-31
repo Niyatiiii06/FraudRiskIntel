@@ -5,7 +5,7 @@ SQL feature engineering in DuckDB, transaction-graph features, gradient-boosted 
 time-based split, cost-based decision thresholds, SHAP explanations, MLflow tracking, and a
 FastAPI scoring service with drift monitoring.
 
-> **Status:** in progress — steps 1–5 done (features, models, cost-based threshold, final test evaluation). Results will be added only after evaluation is run.
+> **Status:** in progress — steps 1–6 done (features, models, cost-based threshold, final test evaluation, SHAP explanations). Results will be added only after evaluation is run.
 
 ## Roadmap
 - [x] 1. Load PaySim into DuckDB
@@ -13,7 +13,7 @@ FastAPI scoring service with drift monitoring.
 - [x] 3. Graph features (time-safe connected components, links to known fraud)
 - [x] 4. Models with time-based train/val/test split, plus a feature-group ablation (validation only)
 - [x] 5. Class weights, cost-based threshold, single test-set evaluation
-- [ ] 6. SHAP explanations (global + per transaction)
+- [x] 6. SHAP explanations (global + per transaction)
 - [ ] 7. MLflow experiment tracking
 - [ ] 8. FastAPI `/score` service + PSI drift check
 - [ ] 9. Tests, CI, Docker, Streamlit demo

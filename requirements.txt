@@ -6,3 +6,6 @@ pytest>=8.0
 # Step 4: models
 scikit-learn>=1.5
 lightgbm>=4.5
+
+# Step 6: explanation chart
+matplotlib>=3.8

@@ -1,0 +1,11 @@
+,mean_abs_shap
+is_transfer,0.7314202300400913
+amount,0.35986023472636763
+dest_txns_prev_all,0.3556432464723436
+hour_of_day,0.3289023310510898
+dest_hours_since_prev,0.32440699850611
+amount_vs_dest_avg,0.32197634105069
+dest_avg_amount_prev,0.15639356576191307
+dest_amount_prev_24h,0.04369210529765583
+dest_txns_prev_24h,0.016027285442097174
+dest_is_new,0.0

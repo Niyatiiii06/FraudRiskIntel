@@ -82,7 +82,17 @@ python -m fraud.evaluate_final
 - Then the test set is scored once and compared with "flag nothing" and PaySim's built-in rule.
 - Saves `models/fraud_model.joblib` and `reports/step5_test_results.json`.
 
-## 8. Run tests
+## 8. Explanations (SHAP)
+```powershell
+pip install -r requirements.txt
+python -m fraud.explain_report
+```
+- Uses LightGBM's built-in SHAP values (`pred_contrib=True`), no extra `shap` package.
+- Saves `reports/shap_global.png` (which features matter most) and `reports/shap_global.csv`.
+- Prints plain-English reasons for three test transactions: a caught fraud,
+  the most confident false alarm, and the fraud the model was most sure was normal.
+
+## 9. Run tests
 ```powershell
 pytest
 ```
