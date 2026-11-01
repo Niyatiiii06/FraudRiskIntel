@@ -82,6 +82,16 @@ python -m fraud.evaluate_final
 - Then the test set is scored once and compared with "flag nothing" and PaySim's built-in rule.
 - Saves `models/fraud_model.joblib` and `reports/step5_test_results.json`.
 
+## 7b. Compare with a rules baseline
+```powershell
+python -m fraud.compare_baseline
+```
+- Rules baseline: flag if `amount >= A`, or if the receiver has no history and `amount >= B`.
+  A and B are picked on validation with the same cost rule as the model.
+- The saved model is not retrained or re-tuned; both are scored on the test set.
+- Money view: a missed fraud loses its amount; every alarm costs `REVIEW_FEE` (100, in `fraud/config.py`).
+- Saves `reports/baseline_comparison.json`.
+
 ## 8. Explanations (SHAP)
 ```powershell
 pip install -r requirements.txt

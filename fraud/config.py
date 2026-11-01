@@ -19,6 +19,10 @@ LABEL_DELAY_HOURS = 24
 COST_MISSED_FRAUD = 50
 COST_FALSE_ALARM = 1
 
+# For the money comparison: a missed fraud loses its amount, and every
+# alarm costs a fixed manual review fee (PaySim currency, an assumption).
+REVIEW_FEE = 100
+
 # Where the trained model and results are saved.
 MODEL_PATH = PROJECT_ROOT / "models" / "fraud_model.joblib"
 REPORTS_DIR = PROJECT_ROOT / "reports"

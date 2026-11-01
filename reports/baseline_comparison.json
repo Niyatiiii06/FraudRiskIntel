@@ -1,0 +1,49 @@
+{
+  "rules": {
+    "big_amount": null,
+    "new_receiver_amount": 750000
+  },
+  "review_fee": 100,
+  "results": [
+    {
+      "approach": "flag nothing",
+      "alarms": 0,
+      "caught": 0,
+      "missed": 4010,
+      "precision": 0.0,
+      "recall": 0.0,
+      "cost_points": 200500,
+      "fraud_amount_caught": 0,
+      "fraud_amount_missed": 6323807770,
+      "review_cost": 0,
+      "money_lost": 6323807770
+    },
+    {
+      "approach": "rules baseline",
+      "alarms": 4065,
+      "caught": 1053,
+      "missed": 2957,
+      "precision": 0.259,
+      "recall": 0.2626,
+      "cost_points": 150862,
+      "fraud_amount_caught": 3799121327,
+      "fraud_amount_missed": 2524686444,
+      "review_cost": 406500,
+      "money_lost": 2525092944
+    },
+    {
+      "approach": "our model",
+      "alarms": 9129,
+      "caught": 2700,
+      "missed": 1310,
+      "precision": 0.2958,
+      "recall": 0.6733,
+      "cost_points": 71929,
+      "fraud_amount_caught": 5808466174,
+      "fraud_amount_missed": 515341597,
+      "review_cost": 912900,
+      "money_lost": 516254497
+    }
+  ],
+  "money_saved_vs_rules": 2008838447
+}
