@@ -148,7 +148,42 @@ Compares each model feature in the training period with validation and test, usi
 Population Stability Index: below 0.1 stable, 0.1-0.25 moderate, above 0.25 big shift.
 Saves `reports/drift_train_vs_validation.csv` and `reports/drift_train_vs_test.csv`.
 
-## 12. Run tests
+## 12. Streamlit demo
+```powershell
+pip install streamlit
+streamlit run demo/streamlit_app.py
+```
+Score a transaction (type, amount, hour, receiver history) and see the probability, decision and
+top reasons. The Results tab shows the test-set comparison and the SHAP chart.
+
+### Deploy for free on Streamlit Community Cloud
+1. Push the repo to GitHub (it must include `models/fraud_model.joblib` and the `reports/` files).
+2. Go to https://share.streamlit.io, click **Create app** and choose this repo and branch `main`.
+3. Main file path: `demo/streamlit_app.py`. Under **Advanced settings** choose Python 3.12.
+4. Click **Deploy**. Cloud installs `demo/requirements.txt` (a light list without MLflow or DuckDB).
+
+## 13. Docker (scoring API)
+```powershell
+docker build -t fraud-api .
+docker run -p 8000:8000 fraud-api
+```
+Then open http://127.0.0.1:8000/docs. The image only installs `requirements-serve.txt` and copies
+`fraud/` and the saved model.
+
+## 14. Continuous integration
+`.github/workflows/ci.yml` runs on every push:
+1. installs `requirements.txt` on Python 3.12 and runs `pytest`;
+2. builds the Docker image, starts it, and checks that `/health` and `/score` respond.
+
+## Design choices
+- **Scored population:** only TRANSFER and CASH_OUT (the only types with fraud); history features still use all types.
+- **Receiver-side history:** 99.85% of senders appear only once, so velocity features are built on the receiving account.
+- **Locked test set:** models and feature sets are compared on validation only; the test set is used once.
+- **No leakage:** history windows only see strictly earlier hours; the transaction graph is grown hour
+  by hour (union-find); fraud labels count only after a 24-hour confirmation delay.
+- **Serving matches training:** the API rebuilds features with the same formulas as the SQL, and a test checks they match.
+
+## 15. Run tests
 ```powershell
 pytest
 ```

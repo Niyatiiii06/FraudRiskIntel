@@ -1,0 +1,11 @@
+feature,psi,status
+dest_txns_prev_24h,0.778,big shift
+dest_hours_since_prev,0.4146,big shift
+dest_amount_prev_24h,0.2935,big shift
+hour_of_day,0.0454,stable
+amount_vs_dest_avg,0.007,stable
+dest_avg_amount_prev,0.0067,stable
+amount,0.0064,stable
+dest_txns_prev_all,0.0034,stable
+dest_is_new,0.0013,stable
+is_transfer,0.0003,stable

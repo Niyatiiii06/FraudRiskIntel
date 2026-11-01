@@ -1,5 +1,9 @@
 # FraudRiskIntel — Fraud Detection & Risk Intelligence
 
+![CI](https://github.com/Niyatiiii06/FraudRiskIntel/actions/workflows/ci.yml/badge.svg)
+
+**Live demo:** _add your Streamlit link here_
+
 **The product feature:** payment risk tools such as Stripe Radar score each payment, show the
 main risk factors, and let merchants choose a preset risk appetite (for example "maximize
 protection" vs "maximize revenue"). The weakness for a learner or a smaller team: the model,
@@ -7,13 +11,10 @@ its features and its trade-off are closed, so you can't inspect or reproduce how
 a block decision was made.
 
 **This project:** an open, inspectable version of that workflow for mobile-money transfers.
-Every transaction gets a fraud probability, a block/allow decision set from explicit business
-costs you choose (cost of a missed fraud vs a false alarm), and quantified per-feature reasons
-(SHAP). It is measured against a tuned rules baseline, the standard starting approach, on a
-fixed later time period. It makes no claim about any real product's accuracy.
-
-Built on the PaySim mobile-money dataset (6.3M synthetic transactions): SQL feature engineering
-in DuckDB, time-safe graph features, LightGBM with a time-based split, and SHAP explanations.
+Every transaction gets a fraud probability, a review/allow decision set from explicit business
+costs (a missed fraud vs a false alarm), and the reasons behind each flag (SHAP). It is measured
+against a tuned rules baseline on a later time period. It makes no claim about any real
+product's accuracy.
 
 ## Results (test set: last ~15% of the month, 408,077 transactions, used once)
 
@@ -25,40 +26,33 @@ in DuckDB, time-safe graph features, LightGBM with a time-based split, and SHAP 
 
 \*Missed fraud amount + a review fee of 100 per alarm (PaySim currency; the fee is an assumption).
 
-- The model loses **79.6% less money** than the tuned rules baseline on this test set.
-- PR-AUC 0.35 vs 0.0098 for random. ROC-AUC 0.94.
-- Ablation (test PR-AUC): base features 0.350, + graph features 0.352, + balance features 0.9999.
-  The ~1.0 scores often reported on PaySim come from the simulator's balance columns,
-  so the final model leaves them out.
+- **79.6% less money lost** than the tuned rules baseline on this test set.
+- PR-AUC 0.35 (random: 0.0098), ROC-AUC 0.94.
+- With PaySim's balance columns the same model reaches PR-AUC 0.9999. Those columns are a
+  simulator artifact, so the final model leaves them out.
 
-## Limitations
-- PaySim is synthetic; results show the method, not real-world fraud rates.
-- Graph features added almost nothing here, because PaySim never reuses fraud accounts.
-- SHAP shows the model leans on hour of day (PaySim's night hours are mostly fraud), which
-  causes confident false alarms at night. Not fixed, to keep the test set untouched.
-- Senders appear only once, so frauds that look normal from the receiver's side are missed.
+## How it works
+1. **Clues per payment (SQL in DuckDB):** amount, transaction type, hour, and the receiving
+   account's history before that hour (is it new, how much does it usually receive).
+2. **Learn from the past:** LightGBM trained on the first ~70% of the month.
+3. **Test on the future:** chosen on the next ~15%, scored once on the last ~15%. No random split.
+4. **Decide by cost:** flag for review if the fraud probability is at least 2.1%, the cut-off
+   that minimises cost when a missed fraud costs 50x a false alarm.
+5. **Explain:** SHAP gives the top reasons behind every score.
+6. **Serve and monitor:** FastAPI `/score` endpoint, PSI drift check, MLflow run tracking,
+   Docker image, CI, and a Streamlit demo.
 
-> **Status:** steps 1–8 done; CI, Docker and the live demo still to come.
-
-## Roadmap
-- [x] 1. Load PaySim into DuckDB
-- [x] 2. SQL feature engineering (receiver velocity, account history, balance mismatches)
-- [x] 3. Graph features (time-safe connected components, links to known fraud)
-- [x] 4. Models with time-based train/val/test split, plus a feature-group ablation (validation only)
-- [x] 5. Class weights, cost-based threshold, single test-set evaluation, comparison with a tuned rules baseline
-- [x] 6. SHAP explanations (global + per transaction)
-- [x] 7. MLflow experiment tracking (local)
-- [x] 8. FastAPI `/score` service (probability, decision, top reasons) + PSI drift check
-- [ ] 9. Tests, CI, Docker, Streamlit demo
-- [ ] 10. Final results
-
-## Key design choices
-- **Scored population:** only TRANSFER and CASH_OUT (the only types with fraud); history features still use all types.
-- **Receiver-side history:** 99.85% of senders appear only once, so velocity features are built on the receiving account.
-- **Locked test set:** models and feature sets are compared on validation only; the test set is used once, at the end.
-- **No leakage in features:** history windows only see strictly earlier hours; the transaction graph is grown hour by hour (union-find), and fraud labels count only after a 24-hour confirmation delay.
+## What the analysis revealed
+- **Dataset limits:** PaySim is synthetic and senders appear only once, so the model can only use
+  the receiver's history, and graph features added nothing (fraud accounts are never reused).
+- **Model behaviour:** SHAP shows heavy reliance on hour of day (PaySim's night traffic is mostly
+  fraud): the same transfer scores 1% at 4 pm and 69% at 6 am. It was not changed after seeing test
+  results.
+- **Drift:** PSI flags a big shift in the 24-hour velocity features because PaySim's volume drops
+  over 80% late in the month. One of them is in the model's top 5, so in a real system this would
+  trigger retraining on recent data.
 
 ## Data
 PaySim synthetic dataset by E. A. Lopez-Rojas et al., from Kaggle (CC BY-SA 4.0). Not stored in this repo.
 
-Setup and commands: see [SETUP.md](SETUP.md).
+Setup, commands and design details: see [SETUP.md](SETUP.md).
