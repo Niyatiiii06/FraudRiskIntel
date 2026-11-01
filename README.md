@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/Niyatiiii06/FraudRiskIntel/actions/workflows/ci.yml/badge.svg)
 
-**Live demo:** _add your Streamlit link here_
+**Live demo:** https://fraudriskintel-kakayo83bhmwawv8lfqsty.streamlit.app/
 
 **The product feature:** payment risk tools such as Stripe Radar score each payment, show the
 main risk factors, and let merchants choose a preset risk appetite (for example "maximize
