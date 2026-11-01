@@ -92,6 +92,14 @@ python -m fraud.compare_baseline
 - Money view: a missed fraud loses its amount; every alarm costs `REVIEW_FEE` (100, in `fraud/config.py`).
 - Saves `reports/baseline_comparison.json`.
 
+## 7c. Precision vs recall for other cost ratios
+```powershell
+python -m fraud.cost_tradeoff
+```
+For cost ratios 5:1 to 100:1 (missed fraud : false alarm) the threshold is picked on validation,
+then scored on test. The final model and its 50:1 headline result don't change.
+Saves `reports/cost_tradeoff.csv`.
+
 ## 8. Explanations (SHAP)
 ```powershell
 pip install -r requirements.txt
