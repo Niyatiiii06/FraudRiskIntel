@@ -12,9 +12,10 @@ data/*.duckdb
 data/*.duckdb.wal
 *.zip
 
-# Later steps
+# MLflow (local runs)
 mlruns/
 mlartifacts/
+mlflow.db
 
 # Editors / OS
 .vscode/

@@ -22,6 +22,7 @@ from fraud.config import (
 from fraud.decision import decision_metrics
 from fraud.modeling import LABEL, load_model_table, time_split
 from fraud.rules_baseline import money_lost, rule_flags, tune_rules
+from fraud.tracking import log_run, start_tracking
 
 
 def limit_text(value):
@@ -80,8 +81,20 @@ def main():
         "results": results.to_dict(orient="records"),
         "money_saved_vs_rules": saved,
     }
-    (REPORTS_DIR / "baseline_comparison.json").write_text(json.dumps(out, indent=2))
+    out_path = REPORTS_DIR / "baseline_comparison.json"
+    out_path.write_text(json.dumps(out, indent=2))
     print("Saved reports/baseline_comparison.json")
+
+    start_tracking()
+    log_run(
+        "rules baseline vs model",
+        params={"rule_big_amount": limit_text(big), "rule_new_receiver_amount": limit_text(new_amount),
+                "review_fee": REVIEW_FEE, "scored_on": "test"},
+        metrics={"rules_money_lost": rules_lost, "model_money_lost": model_lost,
+                 "money_saved_vs_rules": saved},
+        files=[out_path],
+    )
+    print("Logged to MLflow")
 
 
 if __name__ == "__main__":

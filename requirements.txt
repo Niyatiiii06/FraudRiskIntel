@@ -9,3 +9,6 @@ lightgbm>=4.5
 
 # Step 6: explanation chart
 matplotlib>=3.8
+
+# Step 7: experiment tracking
+mlflow>=2.16

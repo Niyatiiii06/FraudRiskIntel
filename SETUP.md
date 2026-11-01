@@ -1,10 +1,11 @@
 # Setup
 
 Tested on Windows (PowerShell) with Python 3.12.
+Python 3.15 does not work yet: MLflow's dependencies (`pyarrow`, `pyyaml`) have no Windows wheels for it.
 
 ## 1. Create the environment
 ```powershell
-python -m venv .venv
+py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
@@ -110,7 +111,18 @@ python -m fraud.explain_report
 - Prints plain-English reasons for three test transactions: a caught fraud,
   the most confident false alarm, and the fraud the model was most sure was normal.
 
-## 9. Run tests
+## 9. Experiment tracking (MLflow)
+`train_models`, `evaluate_final` and `compare_baseline` log every run automatically
+(settings, scores, and the model/result files) to `mlflow.db` and `mlruns/` in the project folder.
+
+To browse the runs:
+```powershell
+pip install -r requirements.txt
+mlflow ui --backend-store-uri sqlite:///mlflow.db
+```
+Then open http://127.0.0.1:5000 and choose the `fraud-risk-intel` experiment. Press Ctrl+C to stop.
+
+## 10. Run tests
 ```powershell
 pytest
 ```

@@ -13,6 +13,7 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 from fraud.config import COST_FALSE_ALARM, COST_MISSED_FRAUD, DB_PATH, MODEL_PATH, REPORTS_DIR
 from fraud.decision import decision_metrics, pick_threshold
 from fraud.modeling import FEATURE_SETS, LABEL, load_model_table, make_model, time_split
+from fraud.tracking import log_run, start_tracking
 
 # graph features didn't help on validation and bal_* is a simulator artifact
 FINAL_FEATURE_SET = "base"
@@ -100,8 +101,23 @@ def main():
         "decisions": decisions.to_dict(orient="records"),
         "ablation": ablation,
     }
-    (REPORTS_DIR / "step5_test_results.json").write_text(json.dumps(results, indent=2))
+    results_path = REPORTS_DIR / "step5_test_results.json"
+    results_path.write_text(json.dumps(results, indent=2))
     print(f"\nSaved {MODEL_PATH.name} and step5_test_results.json")
+
+    ours = decisions[decisions["approach"] == "our model"].iloc[0]
+    start_tracking()
+    log_run(
+        "step5 final model",
+        params={"step": 5, "model": "lightgbm", "feature_set": FINAL_FEATURE_SET,
+                "class_weight": use_class_weight, "threshold": threshold,
+                "cost_missed_fraud": COST_MISSED_FRAUD, "cost_false_alarm": COST_FALSE_ALARM},
+        metrics={"val_pr_auc": val_pr[use_class_weight], "test_pr_auc": test_pr,
+                 "test_roc_auc": test_roc, "test_precision": ours["precision"],
+                 "test_recall": ours["recall"], "test_total_cost": ours["total_cost"]},
+        files=[MODEL_PATH, results_path],
+    )
+    print("Logged to MLflow")
 
 
 if __name__ == "__main__":

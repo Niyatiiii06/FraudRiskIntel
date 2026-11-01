@@ -20,6 +20,7 @@ from fraud.modeling import (
     make_model,
     time_split,
 )
+from fraud.tracking import log_run, start_tracking
 
 REPORT_PATH = PROJECT_ROOT / "reports" / "step4_validation.csv"
 
@@ -51,6 +52,7 @@ def main():
     print("\n=== Time-based split ===")
     print(describe_splits(train, val, test, train_end, val_end).to_string(index=False))
 
+    start_tracking()
     results = []
     for set_name, features in FEATURE_SETS.items():
         for model_name in MODEL_NAMES:
@@ -62,6 +64,12 @@ def main():
             print(f"  {model_name:20s} {set_name:20s} PR-AUC {metrics['pr_auc']:.4f}  ({seconds}s)")
             results.append(
                 {"model": model_name, "features": set_name, "n_features": len(features), **metrics}
+            )
+            log_run(
+                f"step4 {model_name} {set_name}",
+                params={"step": 4, "model": model_name, "feature_set": set_name,
+                        "n_features": len(features), "scored_on": "validation"},
+                metrics={"val_pr_auc": metrics["pr_auc"], "val_roc_auc": metrics["roc_auc"]},
             )
 
     results = pd.DataFrame(results)
