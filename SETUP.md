@@ -122,7 +122,33 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 Then open http://127.0.0.1:5000 and choose the `fraud-risk-intel` experiment. Press Ctrl+C to stop.
 
-## 10. Run tests
+## 10. Scoring API
+```powershell
+pip install -r requirements.txt
+uvicorn fraud.api:app --reload
+```
+Open http://127.0.0.1:8000/docs, choose `POST /score`, click **Try it out**, then **Execute**.
+
+Input: the transaction (`step`, `txn_type` = TRANSFER or CASH_OUT, `amount`) plus the receiver's
+history before this hour (`dest_txns_prev_24h`, `dest_amount_prev_24h`, `dest_txns_prev_all`,
+`dest_avg_amount_prev`, `dest_hours_since_prev`; leave them out for a brand-new receiver).
+The API computes the remaining features with the same formulas as the SQL pipeline
+(a test checks they match).
+
+Output: `fraud_probability`, `decision` (`review` if probability >= the step 5 threshold, else
+`allow`), `threshold`, and `top_reasons` (the 3 features that pushed most towards fraud, from SHAP).
+
+Uses `models/fraud_model.joblib`; set `FRAUD_MODEL_PATH` to use a different file.
+
+## 11. Drift check (PSI)
+```powershell
+python -m fraud.drift_report
+```
+Compares each model feature in the training period with validation and test, using the
+Population Stability Index: below 0.1 stable, 0.1-0.25 moderate, above 0.25 big shift.
+Saves `reports/drift_train_vs_validation.csv` and `reports/drift_train_vs_test.csv`.
+
+## 12. Run tests
 ```powershell
 pytest
 ```

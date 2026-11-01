@@ -38,7 +38,7 @@ in DuckDB, time-safe graph features, LightGBM with a time-based split, and SHAP 
   causes confident false alarms at night. Not fixed, to keep the test set untouched.
 - Senders appear only once, so frauds that look normal from the receiver's side are missed.
 
-> **Status:** steps 1–7 done; API, CI/Docker and demo still to come.
+> **Status:** steps 1–8 done; CI, Docker and the live demo still to come.
 
 ## Roadmap
 - [x] 1. Load PaySim into DuckDB
@@ -48,7 +48,7 @@ in DuckDB, time-safe graph features, LightGBM with a time-based split, and SHAP 
 - [x] 5. Class weights, cost-based threshold, single test-set evaluation, comparison with a tuned rules baseline
 - [x] 6. SHAP explanations (global + per transaction)
 - [x] 7. MLflow experiment tracking (local)
-- [ ] 8. FastAPI `/score` service + PSI drift check
+- [x] 8. FastAPI `/score` service (probability, decision, top reasons) + PSI drift check
 - [ ] 9. Tests, CI, Docker, Streamlit demo
 - [ ] 10. Final results
 
